@@ -1,4 +1,5 @@
-﻿using Efs.Data;
+﻿using CartridgeRequirementSystem.Service.Interface;
+using Efs.Data;
 using Efs.Models;
 using Efs.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,11 @@ namespace CartridgeRequirementSystem.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public AdminController(ApplicationDbContext context)
+        private readonly IAdminService _adminService;
+        public AdminController(ApplicationDbContext context, IAdminService adminService)
         {
             _context = context;
+            _adminService = adminService;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -29,13 +32,7 @@ namespace CartridgeRequirementSystem.Controllers
                 {
                     return RedirectToAction("Login", "Account");
                 }
-                var cartridge = await _context.cartridgeDetail
-                    .GroupBy(c => c.printer_brand)
-                    .Select(group => new BrandCartridgesViewModel
-                    {
-                        Brand = group.Key,
-                        Cartridges = group.ToList(),
-                    }).ToListAsync();
+                var cartridge = await _adminService.GetCartridgesByBrandAsync();
                 return View(cartridge);
             }
             catch(Exception ex)
@@ -59,37 +56,14 @@ namespace CartridgeRequirementSystem.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var existingCartridge = await _context.cartridgeDetail
-                        .FirstOrDefaultAsync(x => x.printer_brand == model.printer_brand
-                                             && x.printer_model == model.printer_model
-                                             && x.cartridge_colour == model.cartridge_colour
-                                             && x.cartridge_number == model.cartridge_number
-                                             && x.cartridge_partNo == model.cartridge_partNo);
-
-                    if(existingCartridge != null)
-                    {
-                        existingCartridge.stock_quantity += model.stock_quantity;
-                        existingCartridge.updatedAt = DateTime.UtcNow;
-                        _context.cartridgeDetail.Update(existingCartridge);
-                    }
-                    else
-                    {
-                        var cartridge = new CartridgeDetail
-                        {
-                            id = model.id,
-                            printer_brand = model.printer_brand,
-                            printer_model = model.printer_model,
-                            cartridge_colour = model.cartridge_colour,
-                            cartridge_number = model.cartridge_number,
-                            cartridge_partNo = model.cartridge_partNo,
-                            stock_quantity = model.stock_quantity,
-                            createdAt = DateTime.UtcNow
-                        };
-                        _context.cartridgeDetail.Add(cartridge);
-                    }
-                    await _context.SaveChangesAsync();
+                    return View(model);
+                }
+                bool result = await _adminService.AddOrUpdateCartridgeAsync(model);
+                if (result)
+                {
                     return RedirectToAction("Index", "Admin");
                 }
+                ModelState.AddModelError("", "Failed to add cartridge.");
             }
             catch(Exception ex)
             {
@@ -107,21 +81,11 @@ namespace CartridgeRequirementSystem.Controllers
                 {
                     return NotFound("Data not found.");
                 }
-                var details = await _context.cartridgeDetail.FirstOrDefaultAsync(x => x.id == id);
-                if(details == null)
+                var cartridge = await _adminService.GetCartridgeByIdAsync(id);
+                if (cartridge == null)
                 {
                     return NotFound("Data not found.");
                 }
-                var cartridge = new CartridgeDetailViewModel
-                {
-                    id = details.id,
-                    printer_brand = details.printer_brand,
-                    printer_model = details.printer_model,
-                    cartridge_colour = details.cartridge_colour,
-                    cartridge_number = details.cartridge_number,
-                    cartridge_partNo = details.cartridge_partNo,
-                    stock_quantity = details.stock_quantity
-                };
                 return View("CartridgeDetail", cartridge);
             }
             catch(Exception ex)
@@ -131,7 +95,7 @@ namespace CartridgeRequirementSystem.Controllers
             }
         }
 
-      
+        
 
 
     }
