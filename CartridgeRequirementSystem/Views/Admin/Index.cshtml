@@ -1,0 +1,252 @@
+﻿@model List<Efs.ViewModels.BrandCartridgesViewModel>
+
+@{
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+
+@Html.Partial("AddCartridge", new Efs.ViewModels.CartridgeDetailViewModel())
+@Html.Partial("CartridgeDetail", new Efs.ViewModels.CartridgeDetailViewModel())
+
+<div class="container-fluid">
+    <div class="row">
+
+        <nav class="col-md-3 col-lg-2 d-md-block bg-dark text-white min-vh-100 p-3 mt-5">
+            <h4 class="text-center mt-4">Admin Dashboard</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href="#" class="nav-link text-white">🏠 Dashboard</a></li>
+                 <li class="nav-item">
+                    <a asp-action="AddCartridge" class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                        🖨️ Cartridge Requirements
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a asp-action="InventoryStatus" class="nav-link text-white" data-bs-toggle="modal" data-bs-target="#inventoryStatus">
+                        📦 Inventory Status
+                    </a> 
+                </li>
+                <li class="nav-item"><a href="#" class="nav-link text-white">📊 Reports</a></li>
+                <li class="nav-item"><a href="#" class="nav-link text-white">⚙️ Settings</a></li>
+            </ul>
+        </nav>
+
+        <main class="col-md-9 col-lg-10 p-4 overflow-auto" style="max-height: 100vh; scroll-behavior: smooth;">
+
+            <div class="bg-light col-12 p-4 mt-5">
+                <h2 class="text-center mb-4">Available Cartridges</h2>
+                <!-- Make this div the scrollable container -->
+                <div class="d-flex flex-nowrap overflow-auto p-2 border rounded" style="white-space: nowrap;">
+                    @foreach (var brandGroup in Model)
+                    {
+                        <div class="p-2">
+                            <h3 class="text-center">@brandGroup.Brand Cartridges</h3> <!-- Add brand name heading -->
+                            <div class="d-flex flex-nowrap">
+                                @foreach (var cartridge in brandGroup.Cartridges)
+                                {
+                                    <div class="card mx-2" style="width: 18rem; flex: 0 0 auto;">
+                                        <div class="card-body">
+                                            <h3 class="card-title">@cartridge.printer_brand Cartridges</h3>
+                                            <h5 class="card-text">@cartridge.printer_model</h5>
+                                            <p class="card-text">Color: <b>@cartridge.cartridge_colour</b></p>
+                                            <p class="card-text">Stock: <span class="badge bg-success">@cartridge.stock_quantity</span></p>
+                                            <a asp-action="CartridgeDetail" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#cartridgeDetails" data-id="@cartridge.id">View Details</a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+
+            <!-- Cartridge Management Section -->
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h6>Cartridge Management</h6>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Manage Cartridge Stock</h5>
+                            <p class="card-text">View, update, or delete cartridge information.</p>
+                            <a href="#" class="btn btn-warning">Manage Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Issued Cartridges -->
+            <h2 class="mt-5">Issued Cartridges</h2>
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Department</th>
+                        <th>Cartridge Brand</th>
+                        <th>Cartridge Model</th>
+                        <th>Cartridge Colour</th>
+                        <th>Issued Quantity</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+
+            <!-- Requests -->
+            <h2 class="mt-5">Pending Requests</h2>
+            <table class="table table-bordered">
+                <thead class="table-warning">
+                    <tr>
+                        <th>User</th>
+                        <th>Department</th>
+                        <th>Cartridge Brand</th>
+                        <th>Cartridge Model</th>
+                        <th>Cartridge Colour</th>
+                        <th>Required Quantity</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+
+        </main>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            // Open Add modal
+            $('.nav-link[data-bs-target="#inventoryStatus"]').off('click').on('click', function () {
+                $.ajax({
+                    url: '/Admin/InventoryStatus',
+                    type: 'GET',
+                    success: function (response) {
+
+                        $('#inventoryStatus .modal-content').html($(response).find('.modal-content').html());
+                        $('#inventoryStatus').modal('show');
+                        $('#inventoryStatus').attr('aria-hidden', 'false');
+                    },
+                    error: function () {
+                        alert("Failed to load. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function (){
+            $('.btn-primary[data-bs-target="#cartridgeDetails"]').off('click').on('click', function (){
+                $.ajax({
+                    url: 'Admin/CartridgeDetail',
+                    type: 'GET',
+                    success: function(response){
+                        $('#cartridgeDetails .modal').html($(response).find('.modal').html());
+                        $('#cartridgeDetails').modal('show');
+                    },
+                    error: function(){
+                        alert("Failed to add data. Please try again later..");
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function (){
+            $('.btn-primary[data-bs-target="#cartridgeDetails"]').off('click').on('click', function(){
+                const id = $(this).data('id');
+                if(!id){
+                    alert("Invalid Id");
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Admin/CartridgeDetail',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (response) {
+                        $('#cartridgeDetails, .modal').html($(response).find('.modal').html());
+                        $('#cartridgeDetails').modal('show');
+                    },
+                    error: function() {
+                        alert("Failed to load data. Please try again.");
+                    }
+                });
+            });
+            $('#cartridgeDetails').on('hidden.bs.modal', function () {
+                $(this).attr('aria-hidden', 'true');
+            });
+        });
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            // Open Add modal
+            $('.nav-link[data-bs-target="#addEmployeeModal"]').off('click').on('click', function () {
+                $.ajax({
+                    url: '/Admin/AddCartridge',
+                    type: 'GET',
+                    success: function (response) {
+
+                        $('#addEmployeeModal .modal-content').html($(response).find('.modal-content').html());
+                        $('#addEmployeeModal').modal('show');
+                        $('#addEmployeeModal').attr('aria-hidden', 'false');
+                    },
+                    error: function () {
+                        alert("Failed to load. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function (){
+            $('#adddata').off('submit').on('submit', function(e){
+                e.preventDefault();
+
+                const formData = $(this).serialize();
+
+                $.ajax({
+                    url: '/Admin/AddCartridge',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response){
+                        if(response.success){
+                            alert('Data submitted successfully.');
+                        }
+                        else{
+                            alert('Unable to add data. Please try again later');
+                        }
+                    },
+                    error: function(){
+                        alert('Failed to add data. Please try again later..');
+                    }
+                });
+            });
+             $('#adddata').on('hidden.bs.modal', function () {
+                $(this).attr('aria-hidden', 'true');
+            });
+        });
+    </script>
+
+
+
+}
+
+

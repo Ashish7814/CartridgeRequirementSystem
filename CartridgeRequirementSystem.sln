@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35728.132 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartridgeRequirementSystem", "CartridgeRequirementSystem\CartridgeRequirementSystem.csproj", "{3CA352A3-0829-4DFE-A0AA-1DCE508FC792}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Efs", "Efs\Efs.csproj", "{D8293EC3-66A0-4960-8E41-E318A8B3ED75}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CA352A3-0829-4DFE-A0AA-1DCE508FC792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CA352A3-0829-4DFE-A0AA-1DCE508FC792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CA352A3-0829-4DFE-A0AA-1DCE508FC792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CA352A3-0829-4DFE-A0AA-1DCE508FC792}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8293EC3-66A0-4960-8E41-E318A8B3ED75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8293EC3-66A0-4960-8E41-E318A8B3ED75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8293EC3-66A0-4960-8E41-E318A8B3ED75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8293EC3-66A0-4960-8E41-E318A8B3ED75}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
