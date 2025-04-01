@@ -1,4 +1,5 @@
-﻿using Efs.Data;
+﻿using CartridgeRequirementSystem.Service.Interface;
+using Efs.Data;
 using Efs.Models;
 using Efs.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,11 @@ namespace CartridgeRequirementSystem.Controllers
     public class AccountController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public AccountController(ApplicationDbContext context)
+        private readonly IAccountService _accountService;
+        public AccountController(ApplicationDbContext context, IAccountService accountService)
         { 
-            _context = context; 
+            _context = context;
+            _accountService = accountService;
         }
 
         [HttpGet]
@@ -36,10 +39,7 @@ namespace CartridgeRequirementSystem.Controllers
                         ModelState.AddModelError("", "Email and Password are required.");
                         return View(login);
                     }
-                    var user = await _context.users
-                        .FirstOrDefaultAsync(x =>
-                        x.email == login.email &&
-                        x.password == login.password);
+                    var user = await _accountService.LoginAsync(login);
                     if (user == null)
                     {
                         ModelState.AddModelError("", "Invalid login attempt.");
@@ -79,30 +79,22 @@ namespace CartridgeRequirementSystem.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var emailExists = await _context.users.AnyAsync(r => r.email == model.email);
-                    if (emailExists)
-                    {
-                        ModelState.AddModelError("Email", "This email is already registered.");
-                        return View(model);
-                    }
-                    var user = new User
-                    {
-                        user_name = model.user_name,
-                        email = model.email,
-                        department = model.department,
-                        password = model.password,
-                    };
-                    _context.users.Add(user);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(SignUp));
+                    return View(model);
                 }
+                var result = await _accountService.RegisterAsync(model);
+                if (!result)
+                {
+                    ModelState.AddModelError("Email", "This email is already registered.");
+                    return View(model);
+                }
+                return RedirectToAction(nameof(SignUp));
+
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "An error occurred: " + ex.Message);
                 return View(model);
             }
-            return View(model);
         }
     }
 }

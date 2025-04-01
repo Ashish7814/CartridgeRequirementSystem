@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options 
      => options.UseSqlServer(builder.Configuration.GetConnectionString("conStr")));
 builder.Services.AddTransient<IAdminService, AdminService>();
+builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
