@@ -95,8 +95,12 @@ namespace CartridgeRequirementSystem.Controllers
             }
         }
 
-       
-
+        [HttpGet]
+        public async Task<IActionResult> ManageCartridge()
+        {
+            var cartridges = await _adminService.ManageCartridgeAsync();
+            return View("ManageCartridge", cartridges);
+        }
 
     }
 }

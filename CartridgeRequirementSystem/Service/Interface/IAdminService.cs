@@ -8,5 +8,6 @@ namespace CartridgeRequirementSystem.Service.Interface
         Task<List<BrandCartridgesViewModel>> GetCartridgesByBrandAsync();
         Task<CartridgeDetailViewModel?> GetCartridgeByIdAsync(int id);
         Task<bool> AddOrUpdateCartridgeAsync(CartridgeDetailViewModel model);
+        Task<List<CartridgeDetailViewModel>> ManageCartridgeAsync();
     }
 }

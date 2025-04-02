@@ -82,7 +82,18 @@ namespace CartridgeRequirementSystem.Service.Implementation
                 }).ToListAsync();
         }
 
-     
-
+        public async Task<List<CartridgeDetailViewModel>> ManageCartridgeAsync()
+        {
+            return await _context.cartridgeDetail.Select(group => new CartridgeDetailViewModel
+            {
+                id = group.id,
+                printer_brand = group.printer_brand,
+                printer_model = group.printer_model,
+                cartridge_colour = group.cartridge_colour,
+                cartridge_number = group.cartridge_number,
+                cartridge_partNo = group.cartridge_partNo,
+                stock_quantity = group.stock_quantity,
+            }).ToListAsync();
+        }
     }
 }
