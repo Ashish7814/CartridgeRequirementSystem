@@ -34,12 +34,11 @@
 
             <div class="bg-light col-12 p-4 mt-5">
                 <h2 class="text-center mb-4">Available Cartridges</h2>
-                <!-- Make this div the scrollable container -->
                 <div class="d-flex flex-nowrap overflow-auto p-2 border rounded" style="white-space: nowrap;">
                     @foreach (var brandGroup in Model)
                     {
                         <div class="p-2">
-                            <h3 class="text-center">@brandGroup.Brand Cartridges</h3> <!-- Add brand name heading -->
+                            <h3 class="text-center">@brandGroup.Brand Cartridges</h3> 
                             <div class="d-flex flex-nowrap">
                                 @foreach (var cartridge in brandGroup.Cartridges)
                                 {
@@ -70,13 +69,11 @@
                         <div class="card-body">
                             <h5 class="card-title">Manage Cartridge Stock</h5>
                             <p class="card-text">View, update, or delete cartridge information.</p>
-                            @* <a href="#" class="btn btn-warning">Manage Now</a> *@
                             <a asp-action="ManageCartridge" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manageCartridge" >
                                 🖨️ Cartridge Requirements
                             </a>
                         </div>
                     </div>
-                   @*  manageCartridgeData *@
                 </div>
             </div>
 
@@ -129,7 +126,7 @@
     }
     <script>
         $(document).ready(function () {
-            // Open Add modal
+
             $('.nav-link[data-bs-target="#inventoryStatus"]').off('click').on('click', function () {
                 $.ajax({
                     url: '/Admin/InventoryStatus',
@@ -152,14 +149,14 @@
     <script>
         $(document).ready(function () {
             $('.btn-warning[data-bs-target="#manageCartridge"]').off('click').on('click', function (e) {
-                e.preventDefault(); // Prevent default behavior
+                e.preventDefault(); 
 
                 $.ajax({
-                    url: '/Admin/ManageCartridge', // Ensure correct URL
-                    type: 'GET', // Fix typo (was 'trype')
+                    url: '/Admin/ManageCartridge', 
+                    type: 'GET', 
                     success: function (response) {
                         $('#manageCartridge .modal-content').html($(response).find('.modal-content').html());
-                        $('#manageCartridge').modal('show'); // Fix incorrect selector
+                        $('#manageCartridge').modal('show'); 
                     },
                     error: function () {
                         alert("Failed to load");
@@ -169,26 +166,6 @@
         });
     </script>
 
-
-  
-  @*   <script>
-        $(document).ready(function (){
-            $(('.btn-warning[data-bs-target="#manageCartridge"]').off('click').on('click', function(){
-                $.ajax({
-                    url: 'Admin/ManageCartridge',
-                    trype: 'GET',
-                    success: function(response){
-                        $('#manageCartridge .modal-content').html($(response).find('.modal-content').html());
-                        $('$manageCartridge').modal('show');
-                        $('#manageCartridge').attr('aria-hidden', 'false');
-                    },
-                    error: function (){
-                        alert("Failed to load");
-                    }
-                })
-            })
-        });
-    </script> *@
 
     <script>
         $(document).ready(function (){
