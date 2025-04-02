@@ -81,5 +81,8 @@ namespace CartridgeRequirementSystem.Service.Implementation
                     Cartridges = group.ToList(),
                 }).ToListAsync();
         }
+
+     
+
     }
 }

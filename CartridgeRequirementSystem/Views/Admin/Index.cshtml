@@ -69,9 +69,13 @@
                         <div class="card-body">
                             <h5 class="card-title">Manage Cartridge Stock</h5>
                             <p class="card-text">View, update, or delete cartridge information.</p>
-                            <a href="#" class="btn btn-warning">Manage Now</a>
+                            @* <a href="#" class="btn btn-warning">Manage Now</a> *@
+                            <a asp-action="ManageCartridge" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#manageCartridgeData">
+                                Manage Now
+                            </a>
                         </div>
                     </div>
+                   @*  manageCartridgeData *@
                 </div>
             </div>
 
@@ -244,6 +248,26 @@
         });
     </script>
 
+
+    <script>
+        $(document).ready(function () {
+            // Open Add modal
+            $('.nav-link[data-bs-target="#manageCartridgeData"]').off('click').on('click', function () {
+                $.ajax({
+                    url: '/Admin/ManageCartridge',
+                    type: 'GET',
+                    success: function (response) {
+
+                        $('#manageCartridgeData .modal-content').html($(response).find('.modal-content').html());
+                        $('#manageCartridgeData').modal('show');
+                    },
+                    error: function () {
+                        alert("Failed to load. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
 
 
 }
