@@ -28,9 +28,9 @@ namespace CartridgeRequirementSystem.Controllers
                     return RedirectToAction("Login", "Account");
                 }
                 var user = await _context.users.FirstOrDefaultAsync(u => u.email == userEmail && u.department == userDepartment);
-                if(user == null && user.department == "Admin")
+                if(user == null && user.department != "Admin")
                 {
-                    return RedirectToAction("Login", "Account");
+                    return RedirectToAction("Index", "Admin");
                 }
                 var cartridge = await _adminService.GetCartridgesByBrandAsync();
                 return View(cartridge);
@@ -54,11 +54,11 @@ namespace CartridgeRequirementSystem.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return View(model);
                 }
-                bool result = await _adminService.AddOrUpdateCartridgeAsync(model);
+                var result = await _adminService.AddOrUpdateCartridgeAsync(model);
                 if (result)
                 {
                     return RedirectToAction("Index", "Admin");

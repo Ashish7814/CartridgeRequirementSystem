@@ -20,12 +20,24 @@ namespace CartridgeRequirementSystem.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            if (HttpContext.Session.GetString("UserEmail") != null)
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var userDepartment = HttpContext.Session.GetString("UserDepartment");
+
+            // If session exists, prevent access to login page
+            if (!string.IsNullOrEmpty(userEmail) && !string.IsNullOrEmpty(userDepartment))
             {
-                return RedirectToAction(nameof(SignUp));
+                if (userDepartment.ToLower() == "admin")
+                {
+                    return RedirectToAction("Index", "Admin"); 
+                }
+                else
+                {
+                    return RedirectToAction("Index", "User"); 
+                }
             }
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel login)
