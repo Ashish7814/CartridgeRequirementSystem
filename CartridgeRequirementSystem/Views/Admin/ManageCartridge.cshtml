@@ -32,6 +32,19 @@
                             {
                                 @foreach(var item in Model)
                                 {
+                                    string badgeClass = "";
+                                    if(item.stock_quantity < 10)
+                                    {
+                                        badgeClass = "badge bg-danger";
+                                    }
+                                    else if (item.stock_quantity >= 10 && item.stock_quantity <= 20)
+                                    {
+                                        badgeClass = "badge bg-warning text-dark"; // Yellow Badge
+                                    }
+                                    else
+                                    {
+                                        badgeClass = "badge bg-success"; // Green Badge
+                                    }
                                     <tr>
                                         <td>@counter</td>
                                         <td>@item.printer_brand</td>
@@ -39,7 +52,7 @@
                                         <td>@item.cartridge_colour</td>
                                         <td>@item.cartridge_number</td>
                                         <td>@item.cartridge_partNo</td>
-                                        <td>@item.stock_quantity</td>
+                                        <td><span class="@badgeClass">@item.stock_quantity</span></td>
                                         <td>
                                             @if (item != null)
                                             {
